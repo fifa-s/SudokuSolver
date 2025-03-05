@@ -38,7 +38,7 @@
                 cell.BorderStyle = BorderStyle.None;
                 cell.KeyPress += (s, e) =>
                 {
-                    if (!char.IsDigit(e.KeyChar) && e.KeyChar == '0' && !char.IsControl(e.KeyChar))
+                    if (!(char.IsDigit(e.KeyChar) || char.IsControl(e.KeyChar)) || e.KeyChar == '0')
                     {
                         e.Handled = true;
                     }
