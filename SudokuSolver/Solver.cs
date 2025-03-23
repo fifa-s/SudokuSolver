@@ -1,14 +1,16 @@
-﻿
-using System.Linq.Expressions;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Windows.Forms;
 
 namespace SudokuSolver
 {
     internal class Solver
     {
-        private SudokuBoard SudokuControl;
+        private SudokuBoardControl SudokuControl;
         private int[] SudokuArr = new int[81];
 
-        public Solver(SudokuBoard sudoku)
+        public Solver(SudokuBoardControl sudoku)
         {
             this.SudokuControl = sudoku;
         }

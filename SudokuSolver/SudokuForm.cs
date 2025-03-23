@@ -1,3 +1,5 @@
+using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace SudokuSolver
@@ -12,7 +14,7 @@ namespace SudokuSolver
 
         private CheckBox AnimateCheckbox;
 
-        private SudokuBoard Sudoku;
+        private SudokuBoardControl Sudoku;
 
         public SudokuForm()
         {
@@ -25,7 +27,7 @@ namespace SudokuSolver
 
             CreateMenu();
 
-            this.Sudoku = new SudokuBoard();
+            this.Sudoku = new SudokuBoardControl();
             this.Sudoku.Location = new Point(BOARD_MARGIN, BOARD_MARGIN);
             Controls.Add(Sudoku);
 
