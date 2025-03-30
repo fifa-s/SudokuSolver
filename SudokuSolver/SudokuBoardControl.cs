@@ -9,6 +9,8 @@ namespace SudokuSolver
     {
         const int CELL_PADDING = 6;
 
+        public SudokuBoard Board = new SudokuBoard(new int[81]);
+
         private bool _readOnly;
         public bool ReadOnly
         {
@@ -46,6 +48,12 @@ namespace SudokuSolver
                     {
                         e.Handled = true;
                     }
+                    else
+                    {
+                        TextBox textBox = (TextBox)s;
+                        if (!textBox.ReadOnly)
+                            Board[Array.IndexOf(Cells, textBox)] = int.Parse(e.KeyChar.ToString());
+                    }
                 };
                 Cells[i] = cell;
                 this.Controls.Add(cell);
@@ -53,37 +61,28 @@ namespace SudokuSolver
             LayoutCells();
 
             this.Resize += (s, e) => LayoutCells();
+            Board.ValueChanged += OnUpdateBoard;
         }
 
-        // Returns 0 if empty
-        public int GetAt(int index)
+        public void OnUpdateBoard(object sender, ValueChangedEventArgs e)
         {
-            if (this.Cells[index].Text == "") { return 0; }
-            return int.Parse(this.Cells[index].Text);
-        }
-
-        // Returns true if success
-        // 0 is empty
-        public bool SetAt(int index, int value, bool solution = false)
-        {
-            if (value > 9 || value < 0)
-                return false;
-
-            if (solution)
+            if (e.EntireBoard)
             {
-                this.Cells[index].ForeColor = Color.Gray;
+                for (int i = 0; i < 81; i++)
+                {
+                    if (Board[i] == 0)
+                        Cells[i].Text = "";
+                    else
+                        Cells[i].Text = Board[i].ToString();
+                }
             }
             else
             {
-                this.Cells[index].ForeColor = Color.Black;
+                if (Board[e.Index] == 0)
+                    Cells[e.Index].Text = "";
+                else
+                    Cells[e.Index].Text = Board[e.Index].ToString();
             }
-
-            if (value == 0)
-                this.Cells[index].Text = "";
-            else
-                this.Cells[index].Text = value.ToString();
-
-            return true;
         }
 
         private void LayoutCells()

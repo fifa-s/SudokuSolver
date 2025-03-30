@@ -12,8 +12,6 @@ namespace SudokuSolver
         private Button RestartButton;
         private Button RandomBoardButton;
 
-        private CheckBox AnimateCheckbox;
-
         private SudokuBoardControl Sudoku;
 
         public SudokuForm()
@@ -45,16 +43,14 @@ namespace SudokuSolver
             this.SolveButton.Click += (s, e) =>
             {
                 this.SolveButton.Enabled = false;
+                this.RandomBoardButton.Enabled = false;
+                this.Sudoku.ReadOnly = true;
+
+                Solver solver = new Solver(this.Sudoku.Board);
+                solver.Solve();
+
                 this.SolveButton.Visible = false;
                 this.RestartButton.Visible = true;
-                this.RandomBoardButton.Enabled = false;
-
-                Solver solver = new Solver(this.Sudoku);
-                if (this.AnimateCheckbox.Checked) 
-                    solver.SolveAnimate();
-                else
-                    solver.Solve();
-
                 this.RestartButton.Enabled = true;
                 this.RestartButton.Visible = true;
             };
@@ -78,14 +74,14 @@ namespace SudokuSolver
 
                 for (int i = 0; i < 81; i++)
                 {
-                    this.Sudoku.SetAt(i, 0);
+                    this.Sudoku.Board[i] = 0;
                 }
             };
             Controls.Add(this.RestartButton);
 
             this.RandomBoardButton = new Button
             {
-                Size = new Size(150, 25),
+                Size = new Size(200, 50),
                 Text = "Random Board",
             };
             this.RandomBoardButton.Click += (s, e) =>
@@ -95,37 +91,31 @@ namespace SudokuSolver
                 {
                     for (int j = 0; j < board[0].Length; j++)
                     {
-                        this.Sudoku.SetAt(i + 9 * j, board[j][i]);
+                        this.Sudoku.Board[i + 9 * j] = board[j][i];
                     }
                 }
             };
             Controls.Add(this.RandomBoardButton);
 
-            this.AnimateCheckbox = new CheckBox
-            {
-                Text = "Animate"
-            };
-            Controls.Add(this.AnimateCheckbox);
         }
 
 
         private void ScreenResize()
         {
-            this.SolveButton.Location = new Point(
-                (this.Width - this.SolveButton.Width) / 2,
-                (BOARD_MARGIN - this.SolveButton.Height) / 2
+            SolveButton.Location = new Point(
+                this.Width / 2 + 20,
+                (BOARD_MARGIN - SolveButton.Height) / 2
             );
             this.RestartButton.Location = this.SolveButton.Location;
+
+            RandomBoardButton.Location = new Point(
+                this.Width / 2 - RandomBoardButton.Width - 20,
+                (BOARD_MARGIN - RandomBoardButton.Height) / 2
+            );
 
             this.Sudoku.Width = Math.Min(this.Width, this.Height) - 2 * BOARD_MARGIN;
             this.Sudoku.Location = new Point((this.Width - this.Sudoku.Width) / 2, BOARD_MARGIN);
 
-            Point p = this.Sudoku.Location;
-            p.Y -= BOARD_MARGIN - this.RandomBoardButton.Height;
-            this.RandomBoardButton.Location = p;
-
-            p.Y += this.AnimateCheckbox.Height;
-            this.AnimateCheckbox.Location = p;
 
             Invalidate();
         }
